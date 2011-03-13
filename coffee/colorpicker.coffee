@@ -4,6 +4,11 @@ brightness = 50
 color_box = []
 hue_bar = [] 
 selected_color = []
+color_picker = []
+
+draw_color_picker = () ->
+  $('body').append($('<div id="color-picker"><div class="hue-bar"><canvas id="hue-bar" width="150" height="10"></canvas></div><div class="color-box"><canvas id="color-box" width="150" height="150"></canvas></div><div class="selected-color"></div></div>').hide())
+
 
 draw_huebox = () ->
   canvas = document.getElementById('hue-bar')
@@ -71,15 +76,28 @@ normalize_brightness = (input) ->
 
 
 $(document).ready ->
+  console.log 'start'
   color = new Color([hue,100,100], 'hsb').rgbToHex()
+  
+  draw_color_picker()
   hue_bar = $('.hue-bar')
   color_box = $('.color-box')
   selected_color = $('.selected-color')
-   
+  color_picker = $('#color-picker')
+
   draw_huebox()
   draw_colorbox()
   colorpicker_events()
   color_selected_color_box()
+  
+
+chrome.extension.onRequest.addListener (request, sender, sendResponse) ->
+  if request is "create_extension"
+    color_picker.toggle()
+
+
+
+
 
 
 

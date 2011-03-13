@@ -1,0 +1,29 @@
+{
+  "name": "Paint Boy",
+  "version": "0.1",
+  "description": "Paint Boy will help you with your websites",
+
+  "background_page": "background.html",
+
+  "browser_action": {
+    "default_icon": "logo.jpg",
+    "default_title": "Paint Boy"
+  },
+
+  "content_scripts": [
+      {
+        "matches": ["http://*/*"],
+        "css": ["css/styles.css"],
+        "js": ["libraries/coffee-script.js", "libraries/jquery.min.js", "libraries/less.js", "libraries/mootools-core.js", "libraries/mootools-more.js", "coffee/colorpicker.js"],
+        "run_at": "document_start"
+      }
+    ],
+
+  "permissions": [
+    "tabs", 
+    "http://*/*"
+  ]
+
+}
+
+
