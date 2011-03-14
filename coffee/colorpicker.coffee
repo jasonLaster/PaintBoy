@@ -120,10 +120,12 @@ write_color_formats = () ->
   selected_color_hex_output.text(color.rgbToHex())
   selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
 
+
 move_handles = () ->
   hue_handle.css('left', normalize_hue(hue, false)  - adjust_handle_position())
   color_handle.css('left', normalize_saturation(saturation, false) - adjust_handle_position())
   color_handle.css('top', normalize_brightness(brightness, false) - adjust_handle_position())
+
 
 colorpicker_events = () ->
   color_handle.mouseup (e) ->
@@ -132,6 +134,7 @@ colorpicker_events = () ->
     saturation = normalize_saturation(xPos)
     brightness = normalize_brightness(yPos)
     draw_selected_color_box()
+  
   
   color_box.click (e) ->
     xPos = e.pageX - color_box.offset().left
@@ -144,10 +147,12 @@ colorpicker_events = () ->
     brightness = normalize_brightness(yPos)
     draw_selected_color_box()
   
+  
   hue_handle.mouseup (e) -> 
     hue = normalize_hue(e.pageX - hue_bar.offset().left)
     draw_colorbox()
     draw_selected_color_box()
+  
   
   hue_bar.click (e) ->
     xPos = e.pageX - hue_bar.offset().left
@@ -156,9 +161,11 @@ colorpicker_events = () ->
     draw_colorbox()
     draw_selected_color_box()
   
+  
   cancel_button.click ->
     wipe_css_selector()
-
+  
+  
   confirm_button.click ->
     if (css_selector isnt "") and (color_viewer_option_selected isnt "")
       color = new Color([hue, saturation, brightness], 'hsb').rgbToHex()
@@ -173,8 +180,8 @@ colorpicker_events = () ->
         when 'font'
           $(css_selector).css('color', color)
           color_viewer.find('.color.font').css('color', color)
-      
-      
+  
+
 
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
@@ -207,7 +214,6 @@ color_viewer_events = () ->
   
 
 
-
 get_colors = (selector) ->
   background = $(selector).css('background-color')
   border = $(selector).css('border-top-color')
@@ -225,7 +231,6 @@ wipe_css_selector = () ->
   color_viewer.find('.background.color').css('background-color', '')
   color_viewer.find('.font.color').css('color', '')
   color_viewer.find('.border.color').css('border-top-color', '').css('border-right-color', '').css('border-bottom-color', '').css('border-left-color', '')
-
 
 
 get_hue = () ->
@@ -283,23 +288,3 @@ $(document).ready ->
   colorpicker_events()
   draw_selected_color_box()
   color_viewer_events()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
