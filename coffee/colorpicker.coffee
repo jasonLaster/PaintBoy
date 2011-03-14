@@ -54,7 +54,6 @@ draw_color_picker = () ->
   
   hue_handle.draggable({axis: "x", containment: "parent"})
   color_handle.draggable({containment: "parent"})
-  console.log(hue_handle)
 
 
 draw_color_viewer = () ->
@@ -120,7 +119,6 @@ write_color_formats = () ->
   color = new Color([hue,saturation,brightness], 'hsb')
   selected_color_hex_output.text(color.rgbToHex())
   selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
-  console.log color
 
 
 colorpicker_events = () ->
@@ -157,6 +155,7 @@ colorpicker_events = () ->
   cancel_button.click ->
     wipe_css_selector()
 
+
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
     if e.which is 13
@@ -166,7 +165,6 @@ color_viewer_events = () ->
       else
         wipe_css_selector()
   
-
   color_viewer.find('.color').click ->
     if css_selector isnt ""
       $(this).toggleClass('selected')
@@ -186,8 +184,7 @@ get_colors = (selector) ->
   color_viewer.find('.background.color').css('background-color', background)
   color_viewer.find('.font.color').css('color', font)
   color_viewer.find('.border.color').css('border-top-color', border).css('border-right-color', border).css('border-bottom-color', border).css('border-left-color', border)
-  console.log background, border, font
-  console.log color_viewer, color_viewer.find('.background.color')
+
 
 wipe_css_selector = () ->
   css_selector_input.val('')
