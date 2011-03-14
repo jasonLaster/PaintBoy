@@ -120,6 +120,10 @@ write_color_formats = () ->
   selected_color_hex_output.text(color.rgbToHex())
   selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
 
+move_handles = () ->
+  hue_handle.css('left', normalize_hue(hue, false)  - adjust_handle_position())
+  color_handle.css('left', normalize_saturation(saturation, false) - adjust_handle_position())
+  color_handle.css('top', normalize_brightness(brightness, false) - adjust_handle_position())
 
 colorpicker_events = () ->
   color_handle.mouseup (e) ->
@@ -169,12 +173,24 @@ color_viewer_events = () ->
     if css_selector isnt ""
       $(this).toggleClass('selected')
       $(this).siblings().removeClass('selected')
-      color_type = $(this).attr('color-type')
-      switch color_type
-        when 'background' then color = $(this).css('background-color')
-        when 'border' then color = $(this).css('border-color')
-        when 'font' then color = $(this).css('color')
-      console.log color
+      color = switch $(this).attr('color-type')
+        when 'background' 
+          background_selected = true
+          $(this).css('background-color')
+        when 'border' 
+          border_selected = true
+          $(this).css('border-top-color')
+        when 'font' 
+          font_selected = true
+          $(this).css('color')
+      hsb = new Color(color).rgbToHsb()
+      get_values_from_hsb(hsb)
+      draw_colorbox()
+      draw_selected_color_box()
+      move_handles()
+  
+
+
 
 get_colors = (selector) ->
   background = $(selector).css('background-color')
@@ -197,22 +213,20 @@ wipe_css_selector = () ->
 
 
 get_hue = () ->
-  border = parseInt(hue_handle.css('border-top-width')) * 2
-  width = parseInt(hue_handle.css('width')) / 2
-  normalize_hue(hue_handle.offset().left - hue_bar.offset().left - border - width)
+  normalize_hue(hue_handle.offset().left - hue_bar.offset().left - adjust_handle_position())
 
   
 get_saturation = () ->
-  border = parseInt(hue_handle.css('border-top-width')) * 2
-  width = parseInt(hue_handle.css('width')) / 2
-  normalize_saturation(color_handle.offset().left - color_box.offset().left)
-
+  normalize_saturation(color_handle.offset().left - color_box.offset().left - adjust_handle_position())
 
 get_brightness = () ->
-  border = parseInt(hue_handle.css('border-top-width')) * 2
-  width = parseInt(hue_handle.css('width')) / 2
-  normalize_brightness(color_handle.offset().top - color_box.offset().top)
+  normalize_brightness(color_handle.offset().top - color_box.offset().top - adjust_handle_position())
 
+adjust_handle_position = () ->
+  border = parseInt(hue_handle.css('border-top-width')) * 2
+  side = parseInt(hue_handle.css('width')) / 2
+  border + side
+  
 
 normalize_hue = (input, x_to_h = true) -> 
   if x_to_h
@@ -231,7 +245,7 @@ normalize_brightness = (input, y_to_b = true) ->
   if y_to_b
     100 - Math.floor((100 / color_box.height()) * input)
   else
-    100 - Math.floor((color_box.height() / 100) * input)
+    parseInt(color_box.width()) - Math.floor((color_box.height() / 100) * input)
 
 
 get_values_from_hsb = (hsb) ->
@@ -243,8 +257,7 @@ get_values_from_hsb = (hsb) ->
 $(document).ready ->
   console.log 'start'
 
-  draw_color_picker()
-  
+  draw_color_picker()  
   hue = get_hue()
   saturation = get_saturation()
   brightness = get_brightness()
