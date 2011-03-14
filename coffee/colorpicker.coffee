@@ -10,12 +10,11 @@ css_selector_input = []
 hue_handle = []
 color_handle = []
 cancel_button = []
+confirm_button = []
 selected_color_hex_output = []
 selected_color_rgb_output = []
 css_selector = ""
-background_selected = false
-border_selected = false
-font_selected = false
+color_viewer_option_selected = ""
 
 draw_color_picker = () ->
   color_picker = 
@@ -35,7 +34,7 @@ draw_color_picker = () ->
       <span class="hex"></span>
     </div>
     <div class="buttons">
-      <input type="submit" name="select" value="Confirm" />
+      <input type="submit" name="confirm" value="Confirm" />
       <input type="submit" name="cancel" value="Cancel" />
     </div>
   </div>
@@ -49,6 +48,7 @@ draw_color_picker = () ->
   hue_handle = hue_bar.find('.handle')
   color_handle = color_box.find('.handle')
   cancel_button = color_picker.find('input[name="cancel"]')
+  confirm_button = color_picker.find('input[name="confirm"]')
   selected_color_hex_output = color_picker.find('.hex')
   selected_color_rgb_output = color_picker.find('.rgb')
   
@@ -159,6 +159,22 @@ colorpicker_events = () ->
   cancel_button.click ->
     wipe_css_selector()
 
+  confirm_button.click ->
+    if (css_selector isnt "") and (color_viewer_option_selected isnt "")
+      color = new Color([hue, saturation, brightness], 'hsb').rgbToHex()
+      console.log(color)
+      switch color_viewer_option_selected
+        when 'background'
+          $(css_selector).css('background-color', color)
+          color_viewer.find('.color.background').css('background-color', color)
+        when 'border'
+          $(css_selector).css('border-top-color', color).css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
+          color_viewer.find('.color.border').css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
+        when 'font'
+          $(css_selector).css('color', color)
+          color_viewer.find('.color.font').css('color', color)
+      
+      
 
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
@@ -175,13 +191,13 @@ color_viewer_events = () ->
       $(this).siblings().removeClass('selected')
       color = switch $(this).attr('color-type')
         when 'background' 
-          background_selected = true
+          color_viewer_option_selected = if color_viewer_option_selected == 'background' then '' else 'background'
           $(this).css('background-color')
         when 'border' 
-          border_selected = true
+          color_viewer_option_selected = if color_viewer_option_selected == 'border' then '' else 'border'
           $(this).css('border-top-color')
         when 'font' 
-          font_selected = true
+          color_viewer_option_selected = if color_viewer_option_selected == 'font' then '' else 'font'
           $(this).css('color')
       hsb = new Color(color).rgbToHsb()
       get_values_from_hsb(hsb)
