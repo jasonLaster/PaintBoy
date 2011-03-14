@@ -153,14 +153,20 @@ get_colors = (selector) ->
 
 
 get_hue = () ->
-  normalize_hue(hue_handle.offset().left - hue_bar.offset().left)
+  border = parseInt(hue_handle.css('border-top-width')) * 2
+  width = parseInt(hue_handle.css('width')) / 2
+  normalize_hue(hue_handle.offset().left - hue_bar.offset().left - border - width)
 
   
 get_saturation = () ->
+  border = parseInt(hue_handle.css('border-top-width')) * 2
+  width = parseInt(hue_handle.css('width')) / 2
   normalize_saturation(color_handle.offset().left - color_box.offset().left)
 
 
 get_brightness = () ->
+  border = parseInt(hue_handle.css('border-top-width')) * 2
+  width = parseInt(hue_handle.css('width')) / 2
   normalize_brightness(color_handle.offset().top - color_box.offset().top)
 
 
