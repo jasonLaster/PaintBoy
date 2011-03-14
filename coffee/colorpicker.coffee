@@ -217,17 +217,30 @@ get_brightness = () ->
   normalize_brightness(color_handle.offset().top - color_box.offset().top)
 
 
-normalize_hue = (input) -> 
-  Math.floor((360 / hue_bar.width()) * input)
+normalize_hue = (input, x_to_h = true) -> 
+  if x_to_h
+    Math.floor((360 / hue_bar.width()) * input)
+  else
+    Math.floor((hue_bar.width() / 360) * input)
+
+normalize_saturation = (input, x_to_s = true) ->
+  if x_to_s
+    Math.floor((100 / color_box.width()) * input)
+  else
+    Math.floor((color_box.width() / 100 ) * input)
 
 
-normalize_saturation = (input) ->
-  Math.floor((100 / color_box.width()) * input)
+normalize_brightness = (input, y_to_b = true) ->
+  if y_to_b
+    100 - Math.floor((100 / color_box.height()) * input)
+  else
+    100 - Math.floor((color_box.height() / 100) * input)
 
 
-normalize_brightness = (input) ->
-  100 - Math.floor((100 / color_box.height()) * input)
-
+get_values_from_hsb = (hsb) ->
+  hue = hsb[0]
+  saturation = hsb[1]
+  brightness = hsb[2]
 
 
 $(document).ready ->
