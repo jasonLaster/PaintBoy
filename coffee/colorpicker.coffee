@@ -166,7 +166,7 @@ get_colors = (selector) ->
   
   color_viewer.find('.background.color').css('background-color', background)
   color_viewer.find('.font.color').css('color', font)
-  color_viewer.find('.border.color').css('border-top-color', border).css('border-right-color', border).css('border-left-color', border)
+  color_viewer.find('.border.color').css('border-top-color', border).css('border-right-color', border).css('border-bottom-color', border).css('border-left-color', border)
   console.log background, border, font
   console.log color_viewer, color_viewer.find('.background.color')
 
