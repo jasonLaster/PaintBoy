@@ -14,7 +14,7 @@
       {
         "matches": ["http://*/*"],
         "css": ["css/styles.css"],
-        "js": ["libraries/coffee-script.js", "libraries/jquery.min.js", "libraries/less.js", "libraries/mootools-core.js", "libraries/mootools-more.js", "coffee/colorpicker.js"],
+        "js": ["libraries/coffee-script.js", "libraries/jquery.min.js", "libraries/less.js", "libraries/mootools-core.js", "libraries/mootools-more.js", "js/main.js", "js/colorpicker.js"],
         "run_at": "document_start"
       }
     ],

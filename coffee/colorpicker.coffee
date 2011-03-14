@@ -5,9 +5,58 @@ color_box = []
 hue_bar = [] 
 selected_color = []
 color_picker = []
+color_viewer = []
+hue_handle = []
+color_handle = []
+css_selector = ""
 
 draw_color_picker = () ->
-  $('body').append($('<div id="color-picker"><div class="hue-bar"><canvas id="hue-bar" width="150" height="10"></canvas></div><div class="color-box"><canvas id="color-box" width="150" height="150"></canvas></div><div class="selected-color"></div></div>').hide())
+  color_picker = 
+  '''
+  <div id="color-picker">
+    <div class="hue-bar">
+      <div class="handle"></div>
+      <canvas id="hue-bar" width="150" height="10"></canvas>
+    </div>
+    <div class="color-box">
+      <canvas id="color-box" width="150" height="150"></canvas>
+      <div class="handle"></div>
+    </div>
+    <div class="selected-color"></div>
+    <div class="buttons">
+      <input type="submit" name="select" value="Confirm" />
+      <input type="submit" name="cancel" value="Cancel" />
+    </div>
+  </div>
+  '''
+  
+  $('body').append($(color_picker))
+  hue_bar = $('.hue-bar')
+  color_box = $('.color-box')
+  selected_color = $('.selected-color')
+  color_picker = $('#color-picker')
+  hue_handle = hue_bar.find('.handle')
+  color_handle = color_box.find('.handle')
+  
+  hue_handle.draggable({axis: "x", containment: "parent"})
+  color_handle.draggable({containment: "parent"})
+  console.log(hue_handle)
+
+
+draw_color_viewer = () ->
+  color_viewer = 
+  '''
+  <div id="color-viewer">
+    <input type="text" name="css_selector" />
+    <div class="colors">
+      <div class="color background"></div>
+      <div class="color border"></div>
+      <div class="color font">A</div>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
+  '''
+  $('body').append($(color_viewer))
 
 
 draw_huebox = () ->
@@ -23,6 +72,7 @@ draw_huebox = () ->
       ctx.moveTo(i,0)
       ctx.lineTo(i,canvas.height)
       ctx.stroke();
+
 
 draw_colorbox = () ->
   canvas = document.getElementById('color-box')
@@ -42,58 +92,109 @@ draw_colorbox = () ->
   ctx.fillStyle = valueGradient
   ctx.fillRect(0,0,canvas_size,canvas_size)
 
-color_selected_color_box = () ->
+
+draw_selected_color_box = () ->
   color = new Color([hue,saturation,brightness], 'hsb').rgbToHex()
   selected_color.css('background-color', color)
 
+
 colorpicker_events = () ->
+  color_handle.mouseup (e) ->
+    xPos = e.pageX - color_box.offset().left
+    yPos = e.pageY - color_box.offset().top
+    saturation = normalize_saturation(xPos)
+    brightness = normalize_brightness(yPos)
+    draw_selected_color_box()
+  
   color_box.click (e) ->
-    offset = color_box.offset()
-    xPos = e.pageX - offset.left
-    yPos = e.pageY - offset.top
+    xPos = e.pageX - color_box.offset().left
+    yPos = e.pageY - color_box.offset().top
+    
+    color_handle.css('left', xPos)
+    color_handle.css('top', yPos)
     
     saturation = normalize_saturation(xPos)
     brightness = normalize_brightness(yPos)
-    color_selected_color_box()    
+    draw_selected_color_box()
   
-  hue_bar.click (e) -> 
-    offset = hue_bar.offset()
-    xPos = e.pageX - offset.left
-    hue = normalize_hue(xPos)
+  hue_handle.mouseup (e) -> 
+    hue = normalize_hue(e.pageX - hue_bar.offset().left)
     draw_colorbox()
-    color_selected_color_box()
+    draw_selected_color_box()
   
+  hue_bar.click (e) ->
+    xPos = e.pageX - hue_bar.offset().left
+    hue = normalize_hue(xPos)
+    hue_handle.css('left', xPos)
+    draw_colorbox()
+    draw_selected_color_box()
+  
+    
+
+
+color_viewer_events = () ->
+  color_viewer.keypress (e) ->
+    if e.which is 13
+      css_selector = color_viewer.find('input[name="css_selector"]').val()
+      get_colors(css_selector)
+  
+
+
+get_colors = (selector) ->
+  background = $(selector).css('background-color')
+  border = $(selector).css('border-top-color')
+  font = $(selector).css('color')
+  
+  color_viewer.find('.background.color').css('background-color', background)
+  color_viewer.find('.font.color').css('color', font)
+  color_viewer.find('.border.color').css('border-top-color', border).css('border-right-color', border).css('border-left-color', border)
+  console.log background, border, font
+  console.log color_viewer, color_viewer.find('.background.color')
+
+
+get_hue = () ->
+  normalize_hue(hue_handle.offset().left - hue_bar.offset().left)
+
+  
+get_saturation = () ->
+  normalize_saturation(color_handle.offset().left - color_box.offset().left)
+
+
+get_brightness = () ->
+  normalize_brightness(color_handle.offset().top - color_box.offset().top)
 
 
 normalize_hue = (input) -> 
   Math.floor((360 / hue_bar.width()) * input)
 
+
 normalize_saturation = (input) ->
   Math.floor((100 / color_box.width()) * input)
+
 
 normalize_brightness = (input) ->
   100 - Math.floor((100 / color_box.height()) * input)
 
 
+
 $(document).ready ->
   console.log 'start'
+
+  draw_color_picker()
+  
+  hue = get_hue()
+  saturation = get_saturation()
+  brightness = get_brightness()
   color = new Color([hue,100,100], 'hsb').rgbToHex()
   
-  draw_color_picker()
-  hue_bar = $('.hue-bar')
-  color_box = $('.color-box')
-  selected_color = $('.selected-color')
-  color_picker = $('#color-picker')
+  draw_color_viewer()
+  color_viewer = $('#color-viewer')
 
   draw_huebox()
   draw_colorbox()
   colorpicker_events()
-  color_selected_color_box()
-  
-
-chrome.extension.onRequest.addListener (request, sender, sendResponse) ->
-  if request is "create_extension"
-    color_picker.toggle()
+  draw_selected_color_box()
+  color_viewer_events()
 
 
 
