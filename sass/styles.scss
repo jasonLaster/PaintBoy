@@ -27,7 +27,8 @@
     margin:10px;
     .color {
       float:left; height:20px; width:20px; margin-right:10px;
-      background-color:#eee; 
+      background-color:#eee;
+      &:hover {cursor:pointer;}
       &.background {
         background-color:#444;
         &.selected {border:2px solid #346391; width:16px; height:16px;}
