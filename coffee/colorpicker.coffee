@@ -248,10 +248,7 @@ $(document).ready ->
   hue = get_hue()
   saturation = get_saturation()
   brightness = get_brightness()
-  color = new Color([hue,100,100], 'hsb').rgbToHex()
-  
   draw_color_viewer()
-
   draw_huebox()
   draw_colorbox()
   colorpicker_events()
