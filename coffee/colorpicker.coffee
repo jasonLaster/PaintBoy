@@ -6,6 +6,7 @@ hue_bar = []
 selected_color = []
 color_picker = []
 color_viewer = []
+css_selector_input = []
 hue_handle = []
 color_handle = []
 selected_color_hex_output = []
@@ -68,6 +69,9 @@ draw_color_viewer = () ->
   </div>
   '''
   $('body').append($(color_viewer))
+  
+  color_viewer = $('#color-viewer')
+  css_selector_input = color_viewer.find('input[name="css_selector"]')
 
 
 draw_huebox = () ->
@@ -148,16 +152,29 @@ colorpicker_events = () ->
     draw_colorbox()
     draw_selected_color_box()
   
-    
+  color_picker.find('input[name="cancel"]').click ->
+    css_selector_input.val('')
+    css_selector = ""
+    color_viewer.find('.background.color').css('background-color', '')
+    color_viewer.find('.font.color').css('color', '')
+    color_viewer.find('.border.color').css('border-top-color', '').css('border-right-color', '').css('border-bottom-color', '').css('border-left-color', '')
 
 
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
     if e.which is 13
-      css_selector = color_viewer.find('input[name="css_selector"]').val()
-      get_colors(css_selector)
+      css_selector = css_selector_input.val()
+      if $(css_selector).length > 0
+        get_colors(css_selector)
+      else
+        css_selector = ""
+        css_selector_input.val('')
   
 
+  color_viewer.find('.color').click ->
+    if css_selector isnt ""
+      $(this).toggleClass('selected')
+      $(this).siblings().removeClass('selected')
 
 get_colors = (selector) ->
   background = $(selector).css('background-color')
@@ -213,7 +230,6 @@ $(document).ready ->
   color = new Color([hue,100,100], 'hsb').rgbToHex()
   
   draw_color_viewer()
-  color_viewer = $('#color-viewer')
 
   draw_huebox()
   draw_colorbox()

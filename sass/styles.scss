@@ -28,9 +28,18 @@
     .color {
       float:left; height:20px; width:20px; margin-right:10px;
       background-color:#eee; 
-      &.background {background-color:#444;}
-      &.border {border:2px solid #444;; width:16px; height:16px;}
-      &.font {color:#444; text-align:center;}
+      &.background {
+        background-color:#444;
+        &.selected {border:2px solid #346391; width:16px; height:16px;}
+      }
+      &.border {
+        border:2px solid #444;; width:16px; height:16px;
+        &.selected {background-color:#4381a3;}
+      }
+      &.font {
+        color:#444; text-align:center;
+        &.selected {background-color:#4381a3;}
+      }
     }
   }
 }
