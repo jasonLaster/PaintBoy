@@ -21,10 +21,10 @@ draw_color_picker = () ->
   <div id="color-picker">
     <div class="hue-bar">
       <div class="handle"></div>
-      <canvas id="hue-bar" width="150" height="10"></canvas>
+      <canvas id="hue-bar" width="250" height="15"></canvas>
     </div>
     <div class="color-box">
-      <canvas id="color-box" width="150" height="150"></canvas>
+      <canvas id="color-box" width="250" height="250"></canvas>
       <div class="handle"></div>
     </div>
     <div class="selected-color"></div>
