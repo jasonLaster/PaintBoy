@@ -9,6 +9,7 @@ color_viewer = []
 css_selector_input = []
 hue_handle = []
 color_handle = []
+cancel_button = []
 selected_color_hex_output = []
 selected_color_rgb_output = []
 css_selector = ""
@@ -47,6 +48,7 @@ draw_color_picker = () ->
   color_picker = $('#color-picker')
   hue_handle = hue_bar.find('.handle')
   color_handle = color_box.find('.handle')
+  cancel_button = color_picker.find('input[name="cancel"]')
   selected_color_hex_output = color_picker.find('.hex')
   selected_color_rgb_output = color_picker.find('.rgb')
   
@@ -61,9 +63,9 @@ draw_color_viewer = () ->
   <div id="color-viewer">
     <input type="text" name="css_selector" />
     <div class="colors">
-      <div class="color background"></div>
-      <div class="color border"></div>
-      <div class="color font">A</div>
+      <div color-type="background" class="color background"></div>
+      <div color-type="border" class="color border"></div>
+      <div color-type="font" class="color font">A</div>
       <div style="clear:both;"></div>
     </div>
   </div>
@@ -152,13 +154,8 @@ colorpicker_events = () ->
     draw_colorbox()
     draw_selected_color_box()
   
-  color_picker.find('input[name="cancel"]').click ->
-    css_selector_input.val('')
-    css_selector = ""
-    color_viewer.find('.background.color').css('background-color', '')
-    color_viewer.find('.font.color').css('color', '')
-    color_viewer.find('.border.color').css('border-top-color', '').css('border-right-color', '').css('border-bottom-color', '').css('border-left-color', '')
-
+  cancel_button.click ->
+    wipe_css_selector()
 
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
@@ -167,14 +164,19 @@ color_viewer_events = () ->
       if $(css_selector).length > 0
         get_colors(css_selector)
       else
-        css_selector = ""
-        css_selector_input.val('')
+        wipe_css_selector()
   
 
   color_viewer.find('.color').click ->
     if css_selector isnt ""
       $(this).toggleClass('selected')
       $(this).siblings().removeClass('selected')
+      color_type = $(this).attr('color-type')
+      switch color_type
+        when 'background' then color = $(this).css('background-color')
+        when 'border' then color = $(this).css('border-color')
+        when 'font' then color = $(this).css('color')
+      console.log color
 
 get_colors = (selector) ->
   background = $(selector).css('background-color')
@@ -186,6 +188,15 @@ get_colors = (selector) ->
   color_viewer.find('.border.color').css('border-top-color', border).css('border-right-color', border).css('border-bottom-color', border).css('border-left-color', border)
   console.log background, border, font
   console.log color_viewer, color_viewer.find('.background.color')
+
+wipe_css_selector = () ->
+  css_selector_input.val('')
+  css_selector = ""
+  color_viewer.find('.color').removeClass('selected')
+  color_viewer.find('.background.color').css('background-color', '')
+  color_viewer.find('.font.color').css('color', '')
+  color_viewer.find('.border.color').css('border-top-color', '').css('border-right-color', '').css('border-bottom-color', '').css('border-left-color', '')
+
 
 
 get_hue = () ->
