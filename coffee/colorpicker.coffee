@@ -83,11 +83,11 @@ draw_huebox = () ->
   strhHex = ""
   
   for i in [1..canvas.width]
-      ctx.strokeStyle = hColor.setHue(i*hSteps).rgbToHex()
-      ctx.beginPath()
-      ctx.moveTo(i,0)
-      ctx.lineTo(i,canvas.height)
-      ctx.stroke();
+    ctx.strokeStyle = hColor.setHue(i*hSteps).rgbToHex()
+    ctx.beginPath()
+    ctx.moveTo(i,0)
+    ctx.lineTo(i,canvas.height)
+    ctx.stroke();
 
 
 draw_colorbox = () ->
@@ -96,6 +96,7 @@ draw_colorbox = () ->
   canvas_size = canvas.width 
   ctx.fillStyle = new Color([hue,100,100], 'hsb').rgbToHex()
   ctx.fillRect(0,0,canvas_size,canvas_size)
+  
   saturationGradient = ctx.createLinearGradient(0,0,canvas_size,0)
   saturationGradient.addColorStop(0, 'rgba(255,255,255,1)')
   saturationGradient.addColorStop(1, 'rgba(255,255,255,0)')
@@ -131,6 +132,7 @@ colorpicker_events = () ->
   color_handle.mouseup (e) ->
     xPos = e.pageX - color_box.offset().left
     yPos = e.pageY - color_box.offset().top
+    
     saturation = normalize_saturation(xPos)
     brightness = normalize_brightness(yPos)
     draw_selected_color_box()
