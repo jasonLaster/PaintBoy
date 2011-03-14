@@ -8,7 +8,12 @@ color_picker = []
 color_viewer = []
 hue_handle = []
 color_handle = []
+selected_color_hex_output = []
+selected_color_rgb_output = []
 css_selector = ""
+background_selected = false
+border_selected = false
+font_selected = false
 
 draw_color_picker = () ->
   color_picker = 
@@ -23,6 +28,10 @@ draw_color_picker = () ->
       <div class="handle"></div>
     </div>
     <div class="selected-color"></div>
+    <div class="color-formats">
+      <span class="rgb"></span> <br />
+      <span class="hex"></span>
+    </div>
     <div class="buttons">
       <input type="submit" name="select" value="Confirm" />
       <input type="submit" name="cancel" value="Cancel" />
@@ -37,6 +46,8 @@ draw_color_picker = () ->
   color_picker = $('#color-picker')
   hue_handle = hue_bar.find('.handle')
   color_handle = color_box.find('.handle')
+  selected_color_hex_output = color_picker.find('.hex')
+  selected_color_rgb_output = color_picker.find('.rgb')
   
   hue_handle.draggable({axis: "x", containment: "parent"})
   color_handle.draggable({containment: "parent"})
@@ -96,6 +107,14 @@ draw_colorbox = () ->
 draw_selected_color_box = () ->
   color = new Color([hue,saturation,brightness], 'hsb').rgbToHex()
   selected_color.css('background-color', color)
+  write_color_formats()
+
+
+write_color_formats = () ->
+  color = new Color([hue,saturation,brightness], 'hsb')
+  selected_color_hex_output.text(color.rgbToHex())
+  selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
+  console.log color
 
 
 colorpicker_events = () ->
