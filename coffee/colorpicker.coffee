@@ -122,6 +122,21 @@ write_color_formats = () ->
   selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
 
 
+update_div = () ->
+  if (css_selector isnt "") and (color_viewer_option_selected isnt "")
+    color = new Color([hue, saturation, brightness], 'hsb').rgbToHex()
+    switch color_viewer_option_selected
+      when 'background'
+        $(css_selector).css('background-color', color)
+        color_viewer.find('.color.background').css('background-color', color)
+      when 'border'
+        $(css_selector).css('border-top-color', color).css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
+        color_viewer.find('.color.border').css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
+      when 'font'
+        $(css_selector).css('color', color)
+        color_viewer.find('.color.font').css('color', color)
+
+
 move_handles = () ->
   hue_handle.css('left', normalize_hue(hue, false)  - adjust_handle_position())
   color_handle.css('left', normalize_saturation(saturation, false) - adjust_handle_position())
@@ -136,6 +151,7 @@ colorpicker_events = () ->
     saturation = normalize_saturation(xPos)
     brightness = normalize_brightness(yPos)
     draw_selected_color_box()
+    update_div()
   
   
   color_box.click (e) ->
@@ -148,6 +164,7 @@ colorpicker_events = () ->
     saturation = normalize_saturation(xPos)
     brightness = normalize_brightness(yPos)
     draw_selected_color_box()
+    update_div()
   
   
   hue_handle.mouseup (e) -> 
@@ -169,19 +186,7 @@ colorpicker_events = () ->
   
   
   confirm_button.click ->
-    if (css_selector isnt "") and (color_viewer_option_selected isnt "")
-      color = new Color([hue, saturation, brightness], 'hsb').rgbToHex()
-      console.log(color)
-      switch color_viewer_option_selected
-        when 'background'
-          $(css_selector).css('background-color', color)
-          color_viewer.find('.color.background').css('background-color', color)
-        when 'border'
-          $(css_selector).css('border-top-color', color).css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
-          color_viewer.find('.color.border').css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
-        when 'font'
-          $(css_selector).css('color', color)
-          color_viewer.find('.color.font').css('color', color)
+    update_div()
   
 
 
