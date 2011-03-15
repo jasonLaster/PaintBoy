@@ -1,21 +1,54 @@
+@mixin box-shadow ($right: 0px, $down: 0px, $blur: 0px, $color:#fff) {
+  -moz-box-shadow:    $right $down $blur $color;
+  -webkit-box-shadow: $right $down $blur $color;
+  box-shadow:         $right $down $blur $color;
+}
+
 #color-picker {
-  position:fixed; top:20px; left:30px; height:400px; padding:10px; background-color:#888;
+  position:fixed; top:20px; left:30px; height:400px;
+  background-color:rgba(30,30,30,0.95);
+  border-radius:5px; @include box-shadow(1px, 2px, 3px, rgba(0,0,0,0.8));
+  .header {
+    height:15px;
+    background-color:rgba(255,255,255,0.2);
+  }
+  input.hex-value {
+    display:block; width:150px; margin:15px auto 10px auto; padding-left:3px;
+    background-color:rgba(60,60,60,0.95); border:1px solid rgba(255,255,255,0.2);
+    color:hsl(0,0%,65%); font-size:10px;
+    &:focus {outline-width:0; border:1px solid rgba(255,255,255,0.3);}
+  }
   .hue-bar {
-    position:relative; margin:10px 0px 10px 0px;
+    position:relative; margin:10px 15px 5px 15px;
+    border:2px solid rgba(0,0,0,0.8);
     .handle {
-      position:absolute; top:0px; left:50px; height:11px; width:4px; z-index:10;
+      position:absolute; top:0px; left:50px; height:11px; width:1px; z-index:10;
       border:2px solid #efefef; border-radius:2px; cursor:pointer;
     }
   }
   .color-box {
-    position:relative;
+    position:relative; margin:10px 15px 10px 15px;
+    border:2px solid rgba(0,0,0,0.8);
     .handle {
-      position:absolute; top:30px; left:80px; height:6px; width:6px; z-index:10;
+      position:absolute; top:30px; left:80px; height:2px; width:2px; z-index:10;
       border:2px solid #f9f9f9; border-radius:4px; cursor:pointer;
     }
   }
-  .selected-color {width:30px; height:20px; margin:20px 0px 0px 00px; background-color:#eee;}
+  .colors {
+    margin:5px 15px;
+    .selected-color {
+      float:left; width:30px; height:15px;
+      background-color:#eee; border:2px solid rgba(0,0,0,0.8); border-right:none;
+    }
+    .preview-color {
+      float:left; width:120px; height:15px;
+      background-color:#eee; border:2px solid rgba(0,0,0,0.8);
+    }    
+  }
   .color-formats {font-family:helvetica, arial; font-size:12px;}
+  .buttons {
+    position:absolute; bottom:0px; height:30px; padding-left:15px;
+  }
 }
 
 #color-viewer {
@@ -44,3 +77,5 @@
     }
   }
 }
+
+.clear {clear:both;}

@@ -3,7 +3,9 @@ saturation = 50
 brightness = 50
 color_box = []
 hue_bar = [] 
+hex_color = []
 selected_color = []
+preview_color = []
 color_picker = []
 color_viewer = []
 css_selector_input = []
@@ -20,15 +22,21 @@ draw_color_picker = () ->
   color_picker = 
   '''
   <div id="color-picker">
+    <div class="header"></div>
+    <input type="text" class="hex-value" placeholder="#color" />
+    <div class="color-box">
+      <canvas id="color-box" width="150" height="150"></canvas>
+      <div class="handle"></div>
+    </div>
     <div class="hue-bar">
       <div class="handle"></div>
-      <canvas id="hue-bar" width="250" height="15"></canvas>
+      <canvas id="hue-bar" width="150" height="15"></canvas>
     </div>
-    <div class="color-box">
-      <canvas id="color-box" width="250" height="250"></canvas>
-      <div class="handle"></div>
+    <div class="colors">
+      <div class="selected-color"></div>
+      <div class="preview-color"></div>
+      <div class="clear"></div>
     </div>
-    <div class="selected-color"></div>
     <div class="color-formats">
       <span class="rgb"></span> <br />
       <span class="hex"></span>
@@ -43,7 +51,9 @@ draw_color_picker = () ->
   $('body').append($(color_picker))
   hue_bar = $('.hue-bar')
   color_box = $('.color-box')
+  hex_color = $('input.hex-value')
   selected_color = $('.selected-color')
+  preview_color = $('.preview-color')
   color_picker = $('#color-picker')
   hue_handle = hue_bar.find('.handle')
   color_handle = color_box.find('.handle')
@@ -52,8 +62,48 @@ draw_color_picker = () ->
   selected_color_hex_output = color_picker.find('.hex')
   selected_color_rgb_output = color_picker.find('.rgb')
   
-  hue_handle.draggable({axis: "x", containment: "parent"})
-  color_handle.draggable({containment: "parent"})
+  color_picker.draggable({cancel: ".color-box, .hue-bar, input, .colors, .buttons, .color-formats"})
+  
+  hue_handle.draggable({
+    axis: "x"
+    containment: "parent"
+    stop: (e) ->
+      xMousePos = e.pageX - color_box.offset().left
+      xPos = hue_handle.offset().left - color_box.offset().left
+      
+      hue = 
+        if (xMousePos < 0) then 0
+        else if (xMousePos > parseInt(color_box.width())) then 360
+        else normalize_hue(xPos)
+      
+      draw_colorbox()
+      update_preview_color_box()
+      update_div()
+    
+  })
+  
+  color_handle.draggable({
+    containment: "parent"
+    stop: (e)->
+      xMousePos = e.pageX - color_box.offset().left
+      yMousePos = e.pageY - color_box.offset().top
+      xPos = color_handle.offset().left - color_box.offset().left
+      yPos = color_handle.offset().top - color_box.offset().top
+      
+      saturation = 
+        if (xMousePos < 0) then 0
+        else if (xMousePos > parseInt(color_box.width())) then 100
+        else normalize_saturation(xPos)
+      
+      brightness = 
+        if (yMousePos < 0) then 100
+        else if (yMousePos > parseInt(color_box.height())) then 0
+        else normalize_brightness(yPos)
+      
+      update_preview_color_box()
+      update_div()
+    
+  })
 
 
 draw_color_viewer = () ->
@@ -110,7 +160,13 @@ draw_colorbox = () ->
   ctx.fillRect(0,0,canvas_size,canvas_size)
 
 
-draw_selected_color_box = () ->
+update_preview_color_box = () ->
+  color = new Color([hue,saturation,brightness], 'hsb').rgbToHex()
+  preview_color.css('background-color', color)
+  write_color_formats()
+
+
+update_selected_color_box = () ->
   color = new Color([hue,saturation,brightness], 'hsb').rgbToHex()
   selected_color.css('background-color', color)
   write_color_formats()
@@ -118,8 +174,8 @@ draw_selected_color_box = () ->
 
 write_color_formats = () ->
   color = new Color([hue,saturation,brightness], 'hsb')
-  selected_color_hex_output.text(color.rgbToHex())
-  selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
+  hex_color.val(color.rgbToHex())
+  # selected_color_rgb_output.text("[#{color[0]}, #{color[1]}, #{color[2]}]")
 
 
 update_div = () ->
@@ -144,15 +200,6 @@ move_handles = () ->
 
 
 colorpicker_events = () ->
-  color_handle.mouseup (e) ->
-    xPos = e.pageX - color_box.offset().left
-    yPos = e.pageY - color_box.offset().top
-    
-    saturation = normalize_saturation(xPos)
-    brightness = normalize_brightness(yPos)
-    draw_selected_color_box()
-    update_div()
-  
   
   color_box.click (e) ->
     xPos = e.pageX - color_box.offset().left
@@ -163,14 +210,8 @@ colorpicker_events = () ->
     
     saturation = normalize_saturation(xPos)
     brightness = normalize_brightness(yPos)
-    draw_selected_color_box()
+    update_preview_color_box()
     update_div()
-  
-  
-  hue_handle.mouseup (e) -> 
-    hue = normalize_hue(e.pageX - hue_bar.offset().left)
-    draw_colorbox()
-    draw_selected_color_box()
   
   
   hue_bar.click (e) ->
@@ -178,7 +219,8 @@ colorpicker_events = () ->
     hue = normalize_hue(xPos)
     hue_handle.css('left', xPos)
     draw_colorbox()
-    draw_selected_color_box()
+    update_preview_color_box()
+    update_div()
   
   
   cancel_button.click ->
@@ -186,9 +228,28 @@ colorpicker_events = () ->
   
   
   confirm_button.click ->
+    update_selected_color_box()
     update_div()
   
-
+  hex_color.keypress (e) ->
+    if (e.which is 13) and (is_color(hex_color.val()))
+      get_colors_from_hex(hex_color.val())
+      update_selected_color_box()
+      update_preview_color_box()
+      update_div()
+      draw_colorbox()
+      move_handles()
+      
+      
+  
+  $('input[placeholder]').focus ->
+    if $(this).val() is $(this).attr('placeholder')
+      $(this).val('')
+  
+  $('input[placeholder]').blur ->
+    if $(this).val() is ''
+      $(this).val($(this).attr('placeholder'))
+  
 
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
@@ -216,7 +277,7 @@ color_viewer_events = () ->
       hsb = new Color(color).rgbToHsb()
       get_values_from_hsb(hsb)
       draw_colorbox()
-      draw_selected_color_box()
+      update_preview_color_box()
       move_handles()
   
 
@@ -281,6 +342,15 @@ get_values_from_hsb = (hsb) ->
   saturation = hsb[1]
   brightness = hsb[2]
 
+get_colors_from_hex = (hex) ->
+  color = new Color(hex).rgbToHsb()
+  hue = color[0]
+  saturation = color[1]
+  brightness = color[2]
+
+is_color = (string) ->
+  (string.hexToRgb() isnt null) and (string.hexToRgb().match(/\d{3},\d{3},\d{3}/) isnt null) 
+
 
 $(document).ready ->
   console.log 'start'
@@ -293,5 +363,6 @@ $(document).ready ->
   draw_huebox()
   draw_colorbox()
   colorpicker_events()
-  draw_selected_color_box()
+  update_preview_color_box()
+  update_selected_color_box()
   color_viewer_events()
