@@ -186,8 +186,17 @@ update_div = () ->
         $(css_selector).css('background-color', color)
         color_viewer.find('.color.background').css('background-color', color)
       when 'border'
-        $(css_selector).css('border-top-color', color).css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
-        color_viewer.find('.color.border').css('border-right-color', color).css('border-bottom-color', color).css('border-left-color', color)
+        $(css_selector)
+          .css('border-top-color', color)
+          .css('border-right-color', color)
+          .css('border-bottom-color', color)
+          .css('border-left-color', color)
+        
+        color_viewer.find('.color.border')
+          .css('border-top-color', color)
+          .css('border-right-color', color)
+          .css('border-bottom-color', color)
+          .css('border-left-color', color)
       when 'font'
         $(css_selector).css('color', color)
         color_viewer.find('.color.font').css('color', color)
