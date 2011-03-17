@@ -358,7 +358,7 @@ get_colors_from_hex = (hex) ->
   brightness = color[2]
 
 is_color = (string) ->
-  (string.hexToRgb() isnt null) and (string.hexToRgb().match(/\d{3},\d{3},\d{3}/) isnt null) 
+  (string.hexToRgb() isnt null) and (string.hexToRgb().match(/\d{1,3},\d{1,3},\d{1,3}/) isnt null) 
 
 
 $(document).ready ->
