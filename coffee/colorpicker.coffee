@@ -110,6 +110,7 @@ draw_color_viewer = () ->
   color_viewer = 
   '''
   <div id="color-viewer">
+    <div class="header"></div>
     <input type="text" name="css_selector" />
     <div class="colors">
       <div color-type="background" class="color background"></div>
@@ -123,6 +124,9 @@ draw_color_viewer = () ->
   
   color_viewer = $('#color-viewer')
   css_selector_input = color_viewer.find('input[name="css_selector"]')
+  
+  color_viewer.draggable()
+
 
 
 draw_huebox = () ->
@@ -269,6 +273,7 @@ color_viewer_events = () ->
       else
         wipe_css_selector()
   
+
   color_viewer.find('.color').click ->
     if css_selector isnt ""
       $(this).toggleClass('selected')
