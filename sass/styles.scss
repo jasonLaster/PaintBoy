@@ -27,7 +27,7 @@
     }
   }
   .color-box {
-    position:relative; margin:10px 15px 10px 15px;
+    position:relative; margin:10px 15px 10px 15px; width:150px; height:150px;
     border:2px solid rgba(0,0,0,0.8);
     .handle {
       position:absolute; top:30px; left:80px; height:2px; width:2px; z-index:10;
