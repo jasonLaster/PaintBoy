@@ -82,6 +82,7 @@ draw_color_picker = () ->
     
   })
   
+  
   color_handle.draggable({
     containment: "parent"
     stop: (e)->
@@ -104,6 +105,7 @@ draw_color_picker = () ->
       update_div()
     
   })
+  
 
 
 draw_color_viewer = () ->
@@ -126,7 +128,6 @@ draw_color_viewer = () ->
   css_selector_input = color_viewer.find('input[name="css_selector"]')
   
   color_viewer.draggable()
-
 
 
 draw_huebox = () ->
@@ -225,6 +226,7 @@ colorpicker_events = () ->
     brightness = normalize_brightness(yPos)
     update_preview_color_box()
     update_div()
+    
   
   
   hue_bar.click (e) ->
@@ -244,6 +246,7 @@ colorpicker_events = () ->
     update_selected_color_box()
     update_div()
   
+  
   hex_color.keypress (e) ->
     if (e.which is 13) and (is_color(hex_color.val()))
       get_colors_from_hex(hex_color.val())
@@ -255,14 +258,17 @@ colorpicker_events = () ->
       
       
   
+  
   $('input[placeholder]').focus ->
     if $(this).val() is $(this).attr('placeholder')
       $(this).val('')
+  
   
   $('input[placeholder]').blur ->
     if $(this).val() is ''
       $(this).val($(this).attr('placeholder'))
   
+
 
 color_viewer_events = () ->
   color_viewer.keypress (e) ->
@@ -273,7 +279,7 @@ color_viewer_events = () ->
       else
         wipe_css_selector()
   
-
+  
   color_viewer.find('.color').click ->
     if css_selector isnt ""
       $(this).toggleClass('selected')
@@ -318,12 +324,14 @@ wipe_css_selector = () ->
 get_hue = () ->
   normalize_hue(hue_handle.offset().left - hue_bar.offset().left - adjust_handle_position())
 
-  
+
 get_saturation = () ->
   normalize_saturation(color_handle.offset().left - color_box.offset().left - adjust_handle_position())
 
+
 get_brightness = () ->
   normalize_brightness(color_handle.offset().top - color_box.offset().top - adjust_handle_position())
+
 
 adjust_handle_position = () ->
   border = parseInt(hue_handle.css('border-top-width')) * 2
@@ -331,11 +339,13 @@ adjust_handle_position = () ->
   border + side
   
 
+
 normalize_hue = (input, x_to_h = true) -> 
   if x_to_h
     Math.floor((360 / hue_bar.width()) * input)
   else
     Math.floor((hue_bar.width() / 360) * input)
+
 
 normalize_saturation = (input, x_to_s = true) ->
   if x_to_s
@@ -356,11 +366,13 @@ get_values_from_hsb = (hsb) ->
   saturation = hsb[1]
   brightness = hsb[2]
 
+
 get_colors_from_hex = (hex) ->
   color = new Color(hex).rgbToHsb()
   hue = color[0]
   saturation = color[1]
   brightness = color[2]
+
 
 is_color = (string) ->
   (string.hexToRgb() isnt null) and (string.hexToRgb().match(/\d{1,3},\d{1,3},\d{1,3}/) isnt null) 
@@ -368,7 +380,7 @@ is_color = (string) ->
 
 $(document).ready ->
   console.log 'start'
-
+  
   draw_color_picker()  
   hue = get_hue()
   saturation = get_saturation()
