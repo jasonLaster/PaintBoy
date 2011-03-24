@@ -1,3 +1,4 @@
+extension = true
 hue = 200
 saturation = 50
 brightness = 50
@@ -375,7 +376,7 @@ is_color = (string) ->
 
 
 $(document).ready ->
-  console.log 'start'
+  console.log 'start Paint Boy'
   
   draw_color_picker()  
   hue = get_hue()
@@ -388,3 +389,6 @@ $(document).ready ->
   update_preview_color_box()
   update_selected_color_box()
   color_viewer_events()
+  if extension
+    color_picker.hide()
+    color_viewer.hide()
