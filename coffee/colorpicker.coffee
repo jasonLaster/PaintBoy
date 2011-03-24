@@ -41,10 +41,6 @@ draw_color_picker = () ->
       <span class="rgb"></span> <br />
       <span class="hex"></span>
     </div>
-    <div class="buttons">
-      <input type="submit" name="confirm" value="Confirm" />
-      <input type="submit" name="cancel" value="Cancel" />
-    </div>
   </div>
   '''
   
