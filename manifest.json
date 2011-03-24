@@ -6,7 +6,7 @@
   "background_page": "background.html",
 
   "browser_action": {
-    "default_icon": "logo.jpg",
+    "default_icon": "pipette.png",
     "default_title": "Paint Boy"
   },
 
