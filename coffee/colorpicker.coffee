@@ -1,4 +1,4 @@
-extension = true
+extension = false
 hue = 200
 saturation = 50
 brightness = 50
