@@ -210,6 +210,7 @@ move_handles = () ->
   color_handle.css('top', normalize_brightness(brightness, false) - adjust_handle_position())
 
 
+
 colorpicker_events = () ->
   
   color_box.click (e) ->
@@ -299,6 +300,8 @@ color_viewer_events = () ->
   
 
 
+
+# HELPER METHODS
 get_colors = (selector) ->
   background = $(selector).css('background-color')
   border = $(selector).css('border-top-color')
